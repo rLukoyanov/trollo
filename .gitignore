@@ -45,3 +45,5 @@ certificates
 
 .env
 .env.local
+
+*.db
