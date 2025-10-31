@@ -1,19 +1,87 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+"use client";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { ChangeEvent, memo, useState } from "react";
+import { signIn } from "@/lib/auth-client";
+import { SparklesCore } from "./ui/sparkles";
+
+const MemoizedSparkles = memo(SparklesCore);
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+    setError("");
+  };
+
+  const handleChangePassword = (event: ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+    setError("");
+  };
+
+  const loginErrors: Record<string, string> = {
+    INVALID_EMAIL: "Неверный формат почты",
+    INVALID_EMAIL_OR_PASSWORD: "Неверная почта или пароль",
+  };
+
+  const handleLogin = async () => {
+    try {
+      const res = await signIn.email({
+        email: email,
+        password: password,
+        callbackURL: "/dashboard",
+      });
+      if (res.error?.code) {
+        setError(loginErrors[res.error?.code] || "");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleLoginVK = async () => {
+    try {
+      const res = await signIn.social({
+        provider: "vk",
+      });
+      if (res.error?.code) {
+        setError(loginErrors[res.error?.code] || "");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleLoginGoogle = async () => {
+    try {
+      const res = await signIn.social({
+        provider: "google",
+        callbackURL: "/dashboard",
+      });
+      if (res.error?.code) {
+        setError(loginErrors[res.error?.code] || "");
+      }
+      console.log(res);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
@@ -21,9 +89,9 @@ export function LoginForm({
           <form className="p-6 md:p-8">
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
+                <h1 className="text-2xl font-bold">Добро пожаловать</h1>
                 <p className="text-muted-foreground text-balance">
-                  Login to your Acme Inc account
+                  Войдите в ваш Infinity аккаунт
                 </p>
               </div>
               <Field>
@@ -33,6 +101,8 @@ export function LoginForm({
                   type="email"
                   placeholder="m@example.com"
                   required
+                  value={email}
+                  onChange={handleChangeEmail}
                 />
               </Field>
               <Field>
@@ -42,35 +112,55 @@ export function LoginForm({
                     href="#"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
-                    Forgot your password?
+                    Забыли пароль?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  value={password}
+                  onChange={handleChangePassword}
+                  id="password"
+                  type="password"
+                  required
+                />
               </Field>
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="button" onClick={handleLogin}>
+                  Войти
+                </Button>
+                <div className="text-center text-red-500 text-sm">{error}</div>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
-                Or continue with
+                или войти с помощью
               </FieldSeparator>
               <Field className="grid grid-cols-3 gap-4">
-                <Button variant="outline" type="button">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <Button variant="outline" type="button" onClick={handleLoginVK}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1.2em"
+                    height="1.2em"
+                    viewBox="0 0 20 20"
+                  >
                     <path
-                      d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
                       fill="currentColor"
-                    />
+                      fillRule="evenodd"
+                      d="M17.802 12.298s1.617 1.597 2.017 2.336a.1.1 0 0 1 .018.035q.244.409.123.645c-.135.261-.592.392-.747.403h-2.858c-.199 0-.613-.052-1.117-.4c-.385-.269-.768-.712-1.139-1.145c-.554-.643-1.033-1.201-1.518-1.201a.6.6 0 0 0-.18.03c-.367.116-.833.639-.833 2.032c0 .436-.344.684-.585.684H9.674c-.446 0-2.768-.156-4.827-2.327C2.324 10.732.058 5.4.036 5.353c-.141-.345.155-.533.475-.533h2.886c.387 0 .513.234.601.444c.102.241.48 1.205 1.1 2.288c1.004 1.762 1.621 2.479 2.114 2.479a.53.53 0 0 0 .264-.07c.644-.354.524-2.654.494-3.128c0-.092-.001-1.027-.331-1.479c-.236-.324-.638-.45-.881-.496c.065-.094.203-.238.38-.323c.441-.22 1.238-.252 2.029-.252h.439c.858.012 1.08.067 1.392.146c.628.15.64.557.585 1.943c-.016.396-.033.842-.033 1.367c0 .112-.005.237-.005.364c-.019.711-.044 1.512.458 1.841a.4.4 0 0 0 .217.062c.174 0 .695 0 2.108-2.425c.62-1.071 1.1-2.334 1.133-2.429c.028-.053.112-.202.214-.262a.5.5 0 0 1 .236-.056h3.395c.37 0 .621.056.67.196c.082.227-.016.92-1.566 3.016c-.261.349-.49.651-.691.915c-1.405 1.844-1.405 1.937.083 3.337"
+                      clipRule="evenodd"
+                    ></path>
                   </svg>
-                  <span className="sr-only">Login with Apple</span>
+                  <span className="sr-only">Войти через VK</span>
                 </Button>
-                <Button variant="outline" type="button">
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleLoginGoogle}
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path
                       d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
                       fill="currentColor"
                     />
                   </svg>
-                  <span className="sr-only">Login with Google</span>
+                  <span className="sr-only">Войти через Google</span>
                 </Button>
                 <Button variant="outline" type="button">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -79,27 +169,35 @@ export function LoginForm({
                       fill="currentColor"
                     />
                   </svg>
-                  <span className="sr-only">Login with Meta</span>
+                  <span className="sr-only">Войти через Meta</span>
                 </Button>
               </Field>
               <FieldDescription className="text-center">
-                Don&apos;t have an account? <a href="#">Sign up</a>
+                Нет аккаунта? <a href="#">Зарегистрироватся</a>
               </FieldDescription>
             </FieldGroup>
           </form>
-          <div className="bg-muted relative hidden md:block">
-            <img
-              src="/placeholder.svg"
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-            />
+          <div className="h-[40rem] relative w-full bg-black flex flex-col items-center justify-center overflow-hidden rounded-md">
+            <div className="w-full absolute inset-0 h-screen">
+              <MemoizedSparkles
+                id="tsparticlesfullpage"
+                background="transparent"
+                minSize={0.6}
+                maxSize={1.4}
+                particleDensity={100}
+                className="w-full h-full"
+                particleColor="#FFFFFF"
+              />
+            </div>
+            <h1 className="md:text-7xl text-3xl lg:text-6xl font-bold text-center text-white relative z-20">
+              Infinity
+            </h1>
           </div>
         </CardContent>
       </Card>
       <FieldDescription className="px-6 text-center">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
+        Созданно <a href="https://github.com/rLukoyanov">@rLukoyanov</a>.
       </FieldDescription>
     </div>
-  )
+  );
 }
