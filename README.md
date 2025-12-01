@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+1.  **Доски (Boards):** Создание, редактирование, удаление, переименование.
+2.  **Колонки (Lists):** Drag-and-drop колонок на доске, создание, переименование, удаление, архивация.
+3.  **Карточки (Cards):** Создание карточек внутри колонок, редактирование заголовка, описание, перемещение между колонками (drag-and-drop), удаление/архивация.
+4.  **Базовая аутентификация:** Регистрация, вход, выход.
+5.  **Привязка данных к пользователю:** Только создатель имеет доступ к своим доскам (или расшаренным).
+6.  **Адаптивный дизайн:** Работа на десктопе и мобильных устройствах.
 
-## Getting Started
+7.  **Участники (Members):** Приглашение пользователей на доску по email или имени, отображение аватарок на карточке.
+8.  **Метки (Labels):** Создание цветных меток, их присвоение карточкам, фильтрация по меткам.
+9.  **Чек-листы (Checklists):** Добавление чек-листа в карточку с возможностью отмечать пункты и прогресс-баром.
+10. **Сроки (Due Dates):** Установка даты и времени дедлайна для карточки с визуальным индикатором (например, цветом при приближении).
+11. **Комментарии (Comments):** Обсуждение внутри карточки, упоминания пользователей (`@username`).
+12. **Поиск:** Поиск карточек по заголовку и описанию в рамках доступных досок.
+13. **Активность (Activity Log):** Автоматическое логирование ключевых действий на доске или в карточке (например, "Петя переместил эту карточку в 'В работе'").
 
-First, run the development server:
+14. **Вложения (Attachments):** Загрузка файлов (изображений, документов) в карточку с предпросмотром.
+15. **Расширенный drag-and-drop:** Плавная анимация, возможность перемещать карточки между колонками с помощью клавиатуры.
+16. **Шаблоны (Templates):** Создание шаблонов досок, колонок или карточек для повторного использования.
+17. **Офлайн-режим:** Возможность просматривать и вносить изменения без интернета с последующей синхронизацией.
+18. **Уведомления (Notifications):** Уведомления о назначении на карточку, приближении дедлайна, упоминаниях в комментариях (внутри приложения или по email).
+19. **Фильтры и сортировка:** Фильтрация карточек по участнику, метке, сроку. Сортировка внутри колонки.
+20. **Голосования (Polls) или реакции (Reactions):** Простые реакции эмодзи к комментариям или карточкам.
+21. **Режим просмотра (Board Views):** Альтернативные представления данных доски (например, **Таблица (Spreadsheet View)**, **Календарь (Calendar View)** для дедлайнов).
+22. **Роли и права доступа:** Владелец, Администратор, Редактор, Зритель с разными уровнями прав.
+23. **Бэкграунды для досок:** Выбор цвета, градиента или загрузка своего фонового изображения.
+24. **Экспорт данных:** Экспорт доски в формате JSON или CSV.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+25. **REST API:** Позволяет внешним приложениям управлять досками и карточками.
+26. **WebSocket (Real-time):** Мгновенное отображение изменений у всех участников доски без перезагрузки (редактирование, перемещение карточек, новые комментарии).
+27. **Power-Ups (Интеграции):** Аналог расширений — интеграция с Google Drive, Dropbox, GitHub, Figma, возможность создавать свои виджеты.
+28. **Автоматизация (Rules/Butler):** Простые правила типа "Когда карточку перемещают в колонку 'Готово', отмечать все пункты чек-листа".
+    *   *Пример: `IF` карточка перемещена в "Готово" `THEN` добавить метку "Зеленый" и установить дату выполнения.*
+29. **Мобильные приложения:** Нативные или на React Native/Flutter.
+30. **Рабочие пространства (Workspaces):** Группировка досок по проектам или командам.
+31. **Дашборды и отчеты:** Визуализация прогресса, диаграммы сгорания задач (Burndown Chart), статистика по участникам.
+32. **Роадмап (Roadmap View):** Представление карточек на временной шкале, как в Jira или Asana.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+33. **Unit и интеграционные тесты:** Для обеспечения стабильности.
+34. **CI/CD:** Автоматизированный деплой.
+35. **История действий (Card History):** Полная история изменений конкретной карточки (что, когда и кто изменил).
+36. **Бэкап и восстановление досок.**
+37. **Интернационализация (i18n):** Поддержка нескольких языков.
